@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>spot IP</title>
+</head>
+<body>
+<h3 id=ips>
+	
+</h3>
+<script>
+var pc = new RTCPeerConnection( {iceServers: [{url: "stun:stun.counterpath.com"},{url: "stun:stun.l.google.com:19302"}]}, {optional: [{RtpDataChannels: true}]});
+pc.onicecandidate = function(ice){
+ if(ice.candidate)
+  // console.log(ice.candidate.candidate)
+	var cand = ice.candidate.candidate;
+	if(/srflx/.test(cand)){
+		ips.innerHTML = ips.innerHTML + cand.match(/udp(.*)typ/)[1].split(' ')[2] + '<br>';
+	}
+ };
+pc.createDataChannel("");
+pc.createOffer(function(result){
+pc.setLocalDescription(result, function(){}, function(){});
+}, function(){});
+</script>
+</body>
+</html>
