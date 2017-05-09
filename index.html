@@ -4,24 +4,21 @@
 	<title>spot IP</title>
 </head>
 <body>
-<div>
-	<h3>Public IPs</h3>
-	<ul id=Pips></ul>
-</div>
-<div>
-	<h3>Local IPs</h3>
-	<ul id=Lips></ul>
+<div id=ips>
 </div>
 <script>
+var address = {public:[], local:[]};
 var pc = new RTCPeerConnection( {iceServers: [{url: "stun:stun.counterpath.com"},{url: "stun:stun.l.google.com:19302"}]}, {optional: [{RtpDataChannels: true}]});
 pc.onicecandidate = function(ice){
 	if(ice.candidate){
 		var cand = ice.candidate.candidate;
 		if(/srflx/.test(cand)){
-			Pips.innerHTML = Pips.innerHTML + '<li>' +cand.match(/udp(.*)typ/)[1].split(' ')[2] + '</li>';
+			address.public.push(cand.match(/udp(.*)typ/)[1].split(' ')[2]);
 		}else{
-			Lips.innerHTML = Lips.innerHTML + '<li>' +cand.match(/udp(.*)typ/)[1].split(' ')[2] + '</li>';
+			address.local.push(cand.match(/udp(.*)typ/)[1].split(' ')[2]);
 		}
+	}else{
+		ips.innerHTML = JSON.stringify(address);
 	}
  };
 pc.createDataChannel("");
